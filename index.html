@@ -2,57 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Swim Meet Stopwatch</title>
+  <title>Swim Stopwatch Control</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    :root {
-      --bg: #0b132b;
-      --card: #1c2541;
-      --accent: #5bc0be;
-      --text: #eaeaea;
-      --muted: #9aa5b1;
-    }
-
-    * {
-      box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
     body {
       margin: 0;
       min-height: 100vh;
-      background: radial-gradient(circle at top, #1c2541, #0b132b);
-      color: var(--text);
+      background: linear-gradient(180deg, #0b132b, #1c2541);
+      color: #eaeaea;
+      font-family: system-ui, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .container {
-      max-width: 420px;
+    .wrap {
       width: 100%;
-      padding: 32px 24px;
+      max-width: 420px;
+      padding: 24px;
       text-align: center;
     }
 
     h1 {
-      margin: 0 0 8px;
-      font-size: 1.8rem;
-      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      font-size: 1.7rem;
     }
 
     p {
-      margin: 0 0 28px;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: 18px;
-      padding: 24px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+      margin-bottom: 24px;
+      color: #9aa5b1;
+      font-size: 0.9rem;
     }
 
     .btn {
@@ -60,52 +40,73 @@
       width: 100%;
       padding: 16px;
       margin-bottom: 14px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #001219;
-      background: var(--accent);
-      border: none;
       border-radius: 14px;
-      cursor: pointer;
+      background: #5bc0be;
+      color: #001219;
+      font-size: 1.05rem;
+      font-weight: 600;
       text-decoration: none;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .btn:last-child {
-      margin-bottom: 0;
+      transition: transform 0.15s ease;
     }
 
     .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(91,192,190,0.35);
     }
 
-    footer {
-      margin-top: 20px;
+    .footer {
+      margin-top: 18px;
       font-size: 0.75rem;
-      color: var(--muted);
+      color: #9aa5b1;
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>Swim Meet Stopwatch</h1>
-    <p>Competition-ready timing tools</p>
+  <div class="wrap">
+    <h1>Swim Stopwatch</h1>
+    <p>Select timing mode</p>
 
-    <div class="card">
-      <a class="btn" href="single_timer.html">
-        🏊 Single Timer
-      </a>
+    <div id="menu"></div>
 
-      <a class="btn" href="dual_timer.html">
-        🏁 Dual Timer
-      </a>
+    <div class="footer">
+      luciustori • GitHub Pages
     </div>
-
-    <footer>
-      Built for training & competition
-    </footer>
   </div>
+
+  <script>
+    const repoOwner = "luciustori";
+    const repoName  = "stopwatch-dual-timer";
+    const branch    = "main";
+
+    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/?ref=${branch}`;
+
+    fetch(apiUrl)
+      .then(res => res.json())
+      .then(files => {
+        const menu = document.getElementById("menu");
+
+        files
+          .filter(f =>
+            f.type === "file" &&
+            f.name.endsWith(".html") &&
+            f.name !== "index.html"
+          )
+          .forEach(f => {
+            const a = document.createElement("a");
+            a.href = f.name;
+            a.className = "btn";
+            a.textContent = f.name
+              .replace(".html", "")
+              .replace(/_/g, " ")
+              .toUpperCase();
+
+            menu.appendChild(a);
+          });
+      })
+      .catch(() => {
+        document.getElementById("menu").innerHTML =
+          "<p>Failed to load menu</p>";
+      });
+  </script>
 </body>
 </html>
